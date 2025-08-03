@@ -4,17 +4,54 @@
 // game flow controllers as objects
 
 function createPlayer(name, symbol) {
-    let score = 0;
-    const displayScore = () => score;
-    const addScore = () => score++;
-    return { name, symbol, displayScore, addScore };
+    const play = (position) => gameboard.add(position, symbol);
+    return { name, symbol, play };
 }
 
 const gameboard = (function() {
-    let gameboard = [];
-    const add = (position, symbol) => gameboard.splice(position, 0, symbol);
+    let gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const add = (position, symbol) => {
+        let index;
+        switch (position) {
+            case "1-1":
+                index = 0;
+                break;
+            case "1-2":
+                index = 1;
+                break;
+            case "1-3":
+                index = 2;
+                break;
+            case "2-1":
+                index = 3;
+                break;
+            case "2-2":
+                index = 4;
+                break;
+            case "2-3":
+                index = 5;
+                break;
+            case "3-1":
+                index = 6;
+                break;
+            case "3-2":
+                index = 7;
+                break;
+            case "3-3":
+                index = 8;
+                break;
+            default:
+                console.log("Invalid format.");
+                return;
+        }
+        gameboard.splice(index, 1, symbol);
+    };
     const get = () => gameboard;
     return { get, add };
+})();
+
+const gameFlow = (function() {
+    let turn;
 })();
 
 /*
@@ -41,13 +78,5 @@ const player2 = createPlayer("Sam", "O");
 
 console.log("Position format: n-m \n");
 let position = prompt("Enter position: ");
-switch (position) {
-    case "1-1":
-        gameboard.add(0, "X");
-        break;
-    case "1-2":
-        gameboard.add(1, "X");
-        break;
-    case "1-3":
-}
+player1.play(position);
 console.log(gameboard.get());
