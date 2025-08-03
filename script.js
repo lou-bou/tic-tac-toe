@@ -51,7 +51,16 @@ const gameboard = (function() {
 })();
 
 const gameFlow = (function() {
-    let turn;
+    let turn = 0;
+    const getTurn = () => turn;
+    const changeTurn = () => {
+        if (turn == 0) {
+            turn = 1;
+        } else {
+            turn = 0;
+        }
+    };
+    return { getTurn, changeTurn };
 })();
 
 /*
@@ -77,6 +86,20 @@ const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
 
 console.log("Position format: n-m \n");
-let position = prompt("Enter position: ");
-player1.play(position);
+let position;
+let round = 1;
+
+while (round <= 9) {
+    if (gameFlow.getTurn() == 0) {
+        position = prompt(`${player1.name}, enter your position`);
+        player1.play(position);
+        gameFlow.changeTurn();
+        round++;
+    } else {
+        position = prompt(`${player2.name}, enter your position`);
+        player2.play(position);
+        gameFlow.changeTurn();
+        round++;
+    }
+}
 console.log(gameboard.get());
