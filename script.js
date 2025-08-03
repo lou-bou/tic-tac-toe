@@ -41,10 +41,15 @@ const gameboard = (function() {
                 index = 8;
                 break;
             default:
-                console.log("Invalid format.");
-                return;
+                return 0; // 0 indicates failure to play round by a player
         }
-        gameboard.splice(index, 1, symbol);
+        if (gameboard[index] != 0) { // if a position selected by a player isn't equal to 0, that means it's either equal to 'X' or 'O', so it can not be picked
+            return 0; // 0 indicates failure to play round by a player
+        } else {
+            gameboard.splice(index, 1, symbol);
+            return 1; // 1 indicates the players successfully played a position
+        }
+        
     };
     const get = () => gameboard;
     return { get, add };
@@ -92,14 +97,23 @@ let round = 1;
 while (round <= 9) {
     if (gameFlow.getTurn() == 0) {
         position = prompt(`${player1.name}, enter your position`);
-        player1.play(position);
-        gameFlow.changeTurn();
-        round++;
+        let hasPlayed = player1.play(position);
+        if (hasPlayed) {
+            gameFlow.changeTurn();
+            round++;
+        } else {
+            console.log(`${player1.name} selected an invalid position, please select again.`)
+        }
+        
     } else {
         position = prompt(`${player2.name}, enter your position`);
-        player2.play(position);
-        gameFlow.changeTurn();
-        round++;
+        let hasPlayed = player2.play(position);
+        if (hasPlayed) {
+            gameFlow.changeTurn();
+            round++;
+        } else {
+            console.log(`${player2.name} selected an invalid position, please select again.`)
+        }
     }
 }
 console.log(gameboard.get());
