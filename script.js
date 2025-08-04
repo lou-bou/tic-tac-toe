@@ -57,6 +57,10 @@ const gameboard = (function() {
 
 const gameFlow = (function() {
     let turn = 0;
+    let round = 1;
+    const getRound = () => round;
+    const setRound = (roundNum) => round = roundNum;
+    const nextRound = () => round++;
     const getTurn = () => turn;
     const changeTurn = () => {
         if (turn == 0) {
@@ -65,7 +69,7 @@ const gameFlow = (function() {
             turn = 0;
         }
     };
-    return { getTurn, changeTurn };
+    return { getTurn, changeTurn, getRound, nextRound, setRound };
 })();
 
 /*
@@ -74,7 +78,7 @@ Logic:
 - Player1 chooses a position (1-3, 3-2...etc) to put X in
 - Player2 does the same with O
 - If 3 of the same symbol in a row: win
-All lines are:
+All straight lines are:
 > 1-1 1-2 1-3
 > 2-1 2-2 2-3
 > 3-1 3-2 3-3
@@ -92,15 +96,15 @@ const player2 = createPlayer("Sam", "O");
 
 console.log("Position format: n-m \n");
 let position;
-let round = 1;
+gameFlow.setRound(1);
 
-while (round <= 9) {
+while (gameFlow.getRound() <= 9) {
     if (gameFlow.getTurn() == 0) {
         position = prompt(`${player1.name}, enter your position`);
         let hasPlayed = player1.play(position);
         if (hasPlayed) {
             gameFlow.changeTurn();
-            round++;
+            gameFlow.nextRound();
         } else {
             console.log(`${player1.name} selected an invalid position, please select again.`)
         }
@@ -110,7 +114,7 @@ while (round <= 9) {
         let hasPlayed = player2.play(position);
         if (hasPlayed) {
             gameFlow.changeTurn();
-            round++;
+            gameFlow.nextRound();
         } else {
             console.log(`${player2.name} selected an invalid position, please select again.`)
         }
