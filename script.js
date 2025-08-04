@@ -70,6 +70,8 @@ const gameFlow = (function() {
             turn = 0;
         }
     };
+    // I was going to put ALL of the gameflow below in this module pattern
+    const playRound = () // i was gonna start by creating a function to play just one round (so basically, only the if block in the gameflow code below, without the while block)
     return { getTurn, changeTurn, getRound, nextRound, setRound };
 })();
 
@@ -94,8 +96,8 @@ All straight lines are:
 
 const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
-
 console.log("Position format: n-m \n");
+
 gameFlow.setRound(1);
 
 while (gameFlow.getRound() <= 9) {
