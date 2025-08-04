@@ -4,13 +4,14 @@
 // game flow controllers as objects
 
 function createPlayer(name, symbol) {
-    const play = (position) => gameboard.add(position, symbol);
+    const play = (position) => gameboard.addSymbol(position, symbol);
     return { name, symbol, play };
 }
 
 const gameboard = (function() {
     let gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const add = (position, symbol) => {
+    const setPosition = (player, playerPosition) => player.play(playerPosition);
+    const addSymbol = (position, symbol) => {
         let index;
         switch (position) {
             case "1-1":
@@ -51,8 +52,8 @@ const gameboard = (function() {
         }
         
     };
-    const get = () => gameboard;
-    return { get, add };
+    const getGameboard = () => gameboard;
+    return { getGameboard, addSymbol, setPosition };
 })();
 
 const gameFlow = (function() {
@@ -95,13 +96,11 @@ const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
 
 console.log("Position format: n-m \n");
-let position;
 gameFlow.setRound(1);
 
 while (gameFlow.getRound() <= 9) {
     if (gameFlow.getTurn() == 0) {
-        position = prompt(`${player1.name}, enter your position`);
-        let hasPlayed = player1.play(position);
+        let hasPlayed = gameboard.setPosition(player1, prompt(`${player1.name}, enter your position`));
         if (hasPlayed) {
             gameFlow.changeTurn();
             gameFlow.nextRound();
@@ -110,8 +109,7 @@ while (gameFlow.getRound() <= 9) {
         }
         
     } else {
-        position = prompt(`${player2.name}, enter your position`);
-        let hasPlayed = player2.play(position);
+        let hasPlayed = gameboard.setPosition(player2, prompt(`${player2.name}, enter your position`));
         if (hasPlayed) {
             gameFlow.changeTurn();
             gameFlow.nextRound();
@@ -120,4 +118,4 @@ while (gameFlow.getRound() <= 9) {
         }
     }
 }
-console.log(gameboard.get());
+console.log(gameboard.getGameboard());
