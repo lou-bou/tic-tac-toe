@@ -70,9 +70,42 @@ const gameFlow = (function() {
             turn = 0;
         }
     };
-    // I was going to put ALL of the gameflow below in this module pattern
-    const playRound = () // i was gonna start by creating a function to play just one round (so basically, only the if block in the gameflow code below, without the while block)
-    return { getTurn, changeTurn, getRound, nextRound, setRound };
+    
+    const playRound = (player1, player2) => {
+        if (turn == 0) {
+            let hasPlayed = gameboard.setPosition(player1, prompt(`${player1.name}, enter your position`));
+            if (hasPlayed) {
+                changeTurn();
+                round++;
+            } else {
+                console.log(`${player1.name} selected an invalid position, please select again.`);
+            }
+        } else {
+            let hasPlayed = gameboard.setPosition(player2, prompt(`${player2.name}, enter your position`));
+            if (hasPlayed) {
+                changeTurn();
+                round++;
+            } else {
+                console.log(`${player2.name} selected an invalid position, please select again.`);
+            }
+        }
+    };
+
+    const playGame = (player1, player2) => {
+        while (round <= 9) {
+            playRound(player1, player2);
+        }
+        checkWinner(player1);
+        checkWinner(player2);
+    }
+
+    const checkWinner = (player) => {
+        const gameboard = gameboard.getGameboard();
+        if (gameboard[0] == player.symbol && gameboard[1] == player.symbol && gameboard[2] == player.symbol) {
+            console.log(player.name + " is the winner!");
+        }
+    }
+    return { playGame, playRound, changeTurn, getRound, nextRound, setRound, getTurn };
 })();
 
 /*
@@ -99,25 +132,5 @@ const player2 = createPlayer("Sam", "O");
 console.log("Position format: n-m \n");
 
 gameFlow.setRound(1);
-
-while (gameFlow.getRound() <= 9) {
-    if (gameFlow.getTurn() == 0) {
-        let hasPlayed = gameboard.setPosition(player1, prompt(`${player1.name}, enter your position`));
-        if (hasPlayed) {
-            gameFlow.changeTurn();
-            gameFlow.nextRound();
-        } else {
-            console.log(`${player1.name} selected an invalid position, please select again.`)
-        }
-        
-    } else {
-        let hasPlayed = gameboard.setPosition(player2, prompt(`${player2.name}, enter your position`));
-        if (hasPlayed) {
-            gameFlow.changeTurn();
-            gameFlow.nextRound();
-        } else {
-            console.log(`${player2.name} selected an invalid position, please select again.`)
-        }
-    }
-}
+gameFlow.playGame(player1, player2);
 console.log(gameboard.getGameboard());
