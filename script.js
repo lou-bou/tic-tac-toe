@@ -94,38 +94,49 @@ const gameFlow = (function() {
     const playGame = (player1, player2) => {
         while (round <= 9) {
             playRound(player1, player2);
+            if (checkWinner(player1)) {
+                console.log(player1.name + " won this game.");
+                return;
+            } else if (checkWinner(player2)) {
+                console.log(player2.name + " won this game.");
+                return;
+            } 
         }
-        checkWinner(player1);
-        checkWinner(player2);
-    }
+        
+
+        console.log("It's a tie.");
+    };
 
     const checkWinner = (player) => {
-        const gameboard = gameboard.getGameboard();
-        if (gameboard[0] == player.symbol && gameboard[1] == player.symbol && gameboard[2] == player.symbol) {
-            console.log(player.name + " is the winner!");
+        const gbArray = gameboard.getGameboard();
+
+        for (let i = 0; i <= 8; i++) {
+            if ((i == 0) || (i == 3) || (i == 6)) {
+                if ((gbArray[i] == player.symbol) && (gbArray[i+1] == player.symbol) && (gbArray[i+2] == player.symbol)) {
+                    return 1; // 1 indicates the player met this condition and thus won
+                }
+            }
+
+            if ((i == 0) || (i == 1) || (i == 2)) {
+                if ((gbArray[i] == player.symbol) && (gbArray[i+3] == player.symbol) && (gbArray[i+6] == player.symbol)) {
+                    return 1; 
+                }
+            }
+
+            if ((gbArray[0] == player.symbol) && (gbArray[4] == player.symbol) && (gbArray[8] == player.symbol)) {
+                return 1; 
+            }
+
+            if ((gbArray[2] == player.symbol) && (gbArray[4] == player.symbol) && (gbArray[6] == player.symbol)) {
+                return 1; 
+            }
         }
-    }
-    return { playGame, playRound, changeTurn, getRound, nextRound, setRound, getTurn };
+
+        return 0;
+    };
+    
+    return { playGame, playRound, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn };
 })();
-
-/*
-Logic:
-- The gameboard is an array with each position being an index [1-1, 1-2, 1-3, 2-1, ...etc]
-- Player1 chooses a position (1-3, 3-2...etc) to put X in
-- Player2 does the same with O
-- If 3 of the same symbol in a row: win
-All straight lines are:
-> 1-1 1-2 1-3
-> 2-1 2-2 2-3
-> 3-1 3-2 3-3
-> 1-1 2-1 3-1
-> 1-2 2-2 3-2
-> 1-3 2-3 3-3
-> 1-1 2-2 3-3
-> 1-3 2-2 3-1
-*/
-
-// print position format, get them to select a position
 
 const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
