@@ -59,6 +59,7 @@ const gameFlow = (function() {
     const setRound = (roundNum) => round = roundNum;
     const nextRound = () => round++;
     const getTurn = () => turn;
+    const resetTurn = () => turn = 0;
     const changeTurn = () => {
         if (turn == 0) {
             turn = 1;
@@ -133,7 +134,7 @@ const gameFlow = (function() {
         return 0;
     };
     
-    return { playGame, playRound, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn };
+    return { playGame, playRound, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn, resetTurn };
 })();
 
 const DOMController = (function () {
@@ -203,6 +204,7 @@ gameboardSquares.forEach((square) => {
                 gameboard.resetGameboardArray();
                 DOMController.resetGameboard();
                 gameFlow.setRound(1);
+                gameFlow.resetTurn();
             }, 500);
         } else if (gameFlow.checkWinner(player2)) {
             setTimeout(() => {
@@ -211,6 +213,7 @@ gameboardSquares.forEach((square) => {
                 gameboard.resetGameboardArray();
                 DOMController.resetGameboard();
                 gameFlow.setRound(1);
+                gameFlow.resetTurn();
             }, 500);
         } 
 
@@ -220,6 +223,7 @@ gameboardSquares.forEach((square) => {
                 gameboard.resetGameboardArray();
                 DOMController.resetGameboard();
                 gameFlow.setRound(1);
+                gameFlow.resetTurn();
             }, 2000);
             
         }
