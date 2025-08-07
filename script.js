@@ -5,35 +5,36 @@ function createPlayer(name, symbol) {
 
 const gameboard = (function() {
     let gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const gameboardReset = () => gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     const setPosition = (player, playerPosition) => player.play(playerPosition);
     const addSymbol = (position, symbol) => {
         let index;
         switch (position) {
-            case "#number0":
+            case "number0":
                 index = 0;
                 break;
-            case "#number1":
+            case "number1":
                 index = 1;
                 break;
-            case "#number2":
+            case "number2":
                 index = 2;
                 break;
-            case "#number3":
+            case "number3":
                 index = 3;
                 break;
-            case "#number4":
+            case "number4":
                 index = 4;
                 break;
-            case "#number5":
+            case "number5":
                 index = 5;
                 break;
-            case "#number6":
+            case "number6":
                 index = 6;
                 break;
-            case "#number7":
+            case "number7":
                 index = 7;
                 break;
-            case "#number8":
+            case "number8":
                 index = 8;
                 break;
             default:
@@ -48,7 +49,7 @@ const gameboard = (function() {
         
     };
     const getGameboard = () => gameboard;
-    return { getGameboard, addSymbol, setPosition };
+    return { getGameboard, addSymbol, setPosition, gameboardReset };
 })();
 
 const gameFlow = (function() {
@@ -150,23 +151,48 @@ const DOMController = (function () {
         }
     }
 
-    const selectSquare = () => { // removing this event listener makes the page load normally. the problem is probably here, but still test
-        const gameboardSquares = document.querySelectorAll(".square");
-        gameboardSquares.forEach((square) => {
-            square.addEventListener("click", () => {
-                return square.getAttribute("id");
-            }, { once: true });
-        });
+    const updateGameboard = (square, symbol) => {
+        square.textContent = symbol;
     }
 
-    return { displayGameboard, selectSquare };
+    return { displayGameboard, updateGameboard };
 })();
 
 const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
 console.log("Position format: n-m \n");
-
-DOMController.displayGameboard();
 gameFlow.setRound(1);
-gameFlow.playGame(player1, player2);
+DOMController.displayGameboard();
+
+const gameboardSquares = document.querySelectorAll(".square");
+gameboardSquares.forEach((square) => {
+    square.addEventListener("click", () => {
+        // return square.getAttribute("id");
+        
+        let squareID = square.getAttribute("id");
+        console.log(`Square ${squareID} selected`);
+        if (gameFlow.getTurn() == 0) {
+            let hasPlayed = gameboard.setPosition(player1, squareID);
+            if (hasPlayed) {
+                gameFlow.changeTurn();
+                gameFlow.nextRound();
+                DOMController.updateGameboard(square, player1.symbol);
+            } else {
+                console.log(`${player1.name} selected an invalid position, please select again.`);
+            }
+        } else {
+            let hasPlayed = gameboard.setPosition(player2, squareID);
+            if (hasPlayed) {
+                gameFlow.changeTurn();
+                gameFlow.nextRound();
+                DOMController.updateGameboard(square, player2.symbol);
+            } else {
+                console.log(`${player2.name} selected an invalid position, please select again.`);
+            }
+        }
+    });
+});
+
+
+
 console.log(gameboard.getGameboard());
