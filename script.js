@@ -1,3 +1,11 @@
+/*
+More features:
+- Allow the 2 players to input their names
+- If they click the start button, the interface changes from name input fields to the gameboard
+- If they click the restart button, the gameboard is reset
+- If they finish a game, instead of alerting, the winner is displayed in a text element.
+*/
+
 function createPlayer(name, symbol) {
     const play = (position) => gameboard.addSymbol(position, symbol);
     return { name, symbol, play };
