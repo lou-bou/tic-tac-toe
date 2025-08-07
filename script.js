@@ -67,43 +67,67 @@ const gameFlow = (function() {
             turn = 0;
         }
     };
-    
-    const playRound = (player1, player2) => {
-        if (turn == 0) {
-            // should probably just directly include square selection event listener here instead of in the DOM controller.
-            let hasPlayed = gameboard.setPosition(player1, DOMController.selectSquare());
-            if (hasPlayed) {
-                changeTurn();
-                round++;
-                DOMController.displayGameboard();
-            } else {
-                console.log(`${player1.name} selected an invalid position, please select again.`);
-            }
-        } else {
-            let hasPlayed = gameboard.setPosition(player2, DOMController.selectSquare());
-            if (hasPlayed) {
-                changeTurn();
-                round++;
-                DOMController.displayGameboard();
-            } else {
-                console.log(`${player2.name} selected an invalid position, please select again.`);
-            }
-        }
-    };
 
     const playGame = (player1, player2) => {
-        while (round <= 9) {
-            playRound(player1, player2);
-            if (checkWinner(player1)) {
-                console.log(player1.name + " won this game.");
-                return;
-            } else if (checkWinner(player2)) {
-                console.log(player2.name + " won this game.");
-                return;
-            } 
-        }
+        gameFlow.setRound(1);
+        DOMController.displayGameboard();
+        const gameboardSquares = document.querySelectorAll(".square");
+        gameboardSquares.forEach((square) => {
+            square.addEventListener("click", () => {
+                // return square.getAttribute("id");
+                let squareID = square.getAttribute("id");
+                console.log(`Square ${squareID} selected`);
+                if (turn == 0) {
+                    let hasPlayed = gameboard.setPosition(player1, squareID);
+                    if (hasPlayed) {
+                        changeTurn();
+                        nextRound();
+                        DOMController.updateGameboard(square, player1.symbol);
+                    } else {
+                        console.log(`${player1.name} selected an invalid position, please select again.`);
+                    }
+                } else {
+                    let hasPlayed = gameboard.setPosition(player2, squareID);
+                    if (hasPlayed) {
+                        changeTurn();
+                        nextRound();
+                        DOMController.updateGameboard(square, player2.symbol);
+                    } else {
+                        console.log(`${player2.name} selected an invalid position, please select again.`);
+                    }
+                }
 
-        console.log("It's a tie.");
+                if (checkWinner(player1)) {
+                    setTimeout(() => {
+                        alert(`${player1.name} won!`);
+                        gameboard.resetGameboardArray();
+                        DOMController.resetGameboard();
+                        setRound(1);
+                        resetTurn();
+                    }, 500);
+                } else if (checkWinner(player2)) {
+                    setTimeout(() => {
+                        alert(`${player2.name} won!`);
+                        console.log(gameboard.getGameboard());
+                        gameboard.resetGameboardArray();
+                        DOMController.resetGameboard();
+                        setRound(1);
+                        resetTurn();
+                    }, 500);
+                } 
+
+                if (getRound() == 10) {
+                    setTimeout(() => {
+                        alert("It's a tie");
+                        gameboard.resetGameboardArray();
+                        DOMController.resetGameboard();
+                        setRound(1);
+                        resetTurn();
+                    }, 2000);
+                    
+                }
+            });
+        });
     };
 
     const checkWinner = (player) => {
@@ -134,7 +158,7 @@ const gameFlow = (function() {
         return 0;
     };
     
-    return { playGame, playRound, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn, resetTurn };
+    return { playGame, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn, resetTurn };
 })();
 
 const DOMController = (function () {
@@ -168,68 +192,5 @@ const DOMController = (function () {
 
 const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
-console.log("Position format: n-m \n");
-gameFlow.setRound(1);
-DOMController.displayGameboard();
 
-const gameboardSquares = document.querySelectorAll(".square");
-gameboardSquares.forEach((square) => {
-    square.addEventListener("click", () => {
-        // return square.getAttribute("id");
-        let squareID = square.getAttribute("id");
-        console.log(`Square ${squareID} selected`);
-        if (gameFlow.getTurn() == 0) {
-            let hasPlayed = gameboard.setPosition(player1, squareID);
-            if (hasPlayed) {
-                gameFlow.changeTurn();
-                gameFlow.nextRound();
-                DOMController.updateGameboard(square, player1.symbol);
-            } else {
-                console.log(`${player1.name} selected an invalid position, please select again.`);
-            }
-        } else {
-            let hasPlayed = gameboard.setPosition(player2, squareID);
-            if (hasPlayed) {
-                gameFlow.changeTurn();
-                gameFlow.nextRound();
-                DOMController.updateGameboard(square, player2.symbol);
-            } else {
-                console.log(`${player2.name} selected an invalid position, please select again.`);
-            }
-        }
-
-        if (gameFlow.checkWinner(player1)) {
-            setTimeout(() => {
-                alert(`${player1.name} won!`);
-                gameboard.resetGameboardArray();
-                DOMController.resetGameboard();
-                gameFlow.setRound(1);
-                gameFlow.resetTurn();
-            }, 500);
-        } else if (gameFlow.checkWinner(player2)) {
-            setTimeout(() => {
-                alert(`${player2.name} won!`);
-                console.log(gameboard.getGameboard());
-                gameboard.resetGameboardArray();
-                DOMController.resetGameboard();
-                gameFlow.setRound(1);
-                gameFlow.resetTurn();
-            }, 500);
-        } 
-
-        if (gameFlow.getRound() == 10) {
-            setTimeout(() => {
-                alert("It's a tie");
-                gameboard.resetGameboardArray();
-                DOMController.resetGameboard();
-                gameFlow.setRound(1);
-                gameFlow.resetTurn();
-            }, 2000);
-            
-        }
-    });
-});
-
-
-
-console.log(gameboard.getGameboard());
+gameFlow.playGame(player1, player2);
