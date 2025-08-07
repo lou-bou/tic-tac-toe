@@ -1,8 +1,3 @@
-// gameboard as an array
-
-// players as objects
-// game flow controllers as objects
-
 function createPlayer(name, symbol) {
     const play = (position) => gameboard.addSymbol(position, symbol);
     return { name, symbol, play };
@@ -77,6 +72,7 @@ const gameFlow = (function() {
             if (hasPlayed) {
                 changeTurn();
                 round++;
+                DOMController.displayGameboard();
             } else {
                 console.log(`${player1.name} selected an invalid position, please select again.`);
             }
@@ -85,6 +81,7 @@ const gameFlow = (function() {
             if (hasPlayed) {
                 changeTurn();
                 round++;
+                DOMController.displayGameboard();
             } else {
                 console.log(`${player2.name} selected an invalid position, please select again.`);
             }
@@ -136,6 +133,23 @@ const gameFlow = (function() {
     };
     
     return { playGame, playRound, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn };
+})();
+
+const DOMController = (function () {
+    const gameboardArray = gameboard.getGameboard();
+    const gameboardWhole = document.querySelector(".gameboard");
+    
+    const displayGameboard = () => {
+        gameboardWhole.textContent = ""; // reset gameboard contents
+        for (let i = 0; i <= 8; i++) {
+            const gameboardSquare = document.createElement("div"); // each cell in the board is a div thats inside the main gameboard div defined in index.html
+            gameboardSquare.textContent = gameboardArray[i];
+            gameboardSquare.setAttribute("class", "square");
+            gameboardWhole.appendChild(gameboardSquare);
+        }
+    }
+
+    return { displayGameboard };
 })();
 
 const player1 = createPlayer("Lou", "X");
