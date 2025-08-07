@@ -1,3 +1,20 @@
 * {
     border: black 2px solid;
 }
+
+.gameboard {
+    display: grid;
+    grid-template: repeat(3, 100px) / repeat(3, 100px);
+    justify-content: center;
+    align-items: center;
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    font-size: 30px;
+}
+
