@@ -5,7 +5,7 @@ function createPlayer(name, symbol) {
 
 const gameboard = (function() {
     let gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const gameboardReset = () => gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const resetGameboardArray = () => gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     const setPosition = (player, playerPosition) => player.play(playerPosition);
     const addSymbol = (position, symbol) => {
         let index;
@@ -49,7 +49,7 @@ const gameboard = (function() {
         
     };
     const getGameboard = () => gameboard;
-    return { getGameboard, addSymbol, setPosition, gameboardReset };
+    return { getGameboard, addSymbol, setPosition, resetGameboardArray };
 })();
 
 const gameFlow = (function() {
@@ -155,7 +155,14 @@ const DOMController = (function () {
         square.textContent = symbol;
     }
 
-    return { displayGameboard, updateGameboard };
+    const resetGameboard = () => {
+        const gameboardSquares = document.querySelectorAll(".square");
+        gameboardSquares.forEach((square) => {
+            square.textContent = "0";
+        });
+    }
+
+    return { displayGameboard, updateGameboard, resetGameboard };
 })();
 
 const player1 = createPlayer("Lou", "X");
@@ -168,7 +175,6 @@ const gameboardSquares = document.querySelectorAll(".square");
 gameboardSquares.forEach((square) => {
     square.addEventListener("click", () => {
         // return square.getAttribute("id");
-        
         let squareID = square.getAttribute("id");
         console.log(`Square ${squareID} selected`);
         if (gameFlow.getTurn() == 0) {
@@ -189,6 +195,33 @@ gameboardSquares.forEach((square) => {
             } else {
                 console.log(`${player2.name} selected an invalid position, please select again.`);
             }
+        }
+
+        if (gameFlow.checkWinner(player1)) {
+            setTimeout(() => {
+                alert(`${player1.name} won!`);
+                gameboard.resetGameboardArray();
+                DOMController.resetGameboard();
+                gameFlow.setRound(1);
+            }, 500);
+        } else if (gameFlow.checkWinner(player2)) {
+            setTimeout(() => {
+                alert(`${player2.name} won!`);
+                console.log(gameboard.getGameboard());
+                gameboard.resetGameboardArray();
+                DOMController.resetGameboard();
+                gameFlow.setRound(1);
+            }, 500);
+        } 
+
+        if (gameFlow.getRound() == 10) {
+            setTimeout(() => {
+                alert("It's a tie");
+                gameboard.resetGameboardArray();
+                DOMController.resetGameboard();
+                gameFlow.setRound(1);
+            }, 2000);
+            
         }
     });
 });
