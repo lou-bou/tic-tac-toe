@@ -9,31 +9,31 @@ const gameboard = (function() {
     const addSymbol = (position, symbol) => {
         let index;
         switch (position) {
-            case "1-1":
+            case "#number0":
                 index = 0;
                 break;
-            case "1-2":
+            case "#number1":
                 index = 1;
                 break;
-            case "1-3":
+            case "#number2":
                 index = 2;
                 break;
-            case "2-1":
+            case "#number3":
                 index = 3;
                 break;
-            case "2-2":
+            case "#number4":
                 index = 4;
                 break;
-            case "2-3":
+            case "#number5":
                 index = 5;
                 break;
-            case "3-1":
+            case "#number6":
                 index = 6;
                 break;
-            case "3-2":
+            case "#number7":
                 index = 7;
                 break;
-            case "3-3":
+            case "#number8":
                 index = 8;
                 break;
             default:
@@ -68,7 +68,8 @@ const gameFlow = (function() {
     
     const playRound = (player1, player2) => {
         if (turn == 0) {
-            let hasPlayed = gameboard.setPosition(player1, prompt(`${player1.name}, enter your position`));
+            // should probably just directly include square selection event listener here instead of in the DOM controller.
+            let hasPlayed = gameboard.setPosition(player1, DOMController.selectSquare());
             if (hasPlayed) {
                 changeTurn();
                 round++;
@@ -77,7 +78,7 @@ const gameFlow = (function() {
                 console.log(`${player1.name} selected an invalid position, please select again.`);
             }
         } else {
-            let hasPlayed = gameboard.setPosition(player2, prompt(`${player2.name}, enter your position`));
+            let hasPlayed = gameboard.setPosition(player2, DOMController.selectSquare());
             if (hasPlayed) {
                 changeTurn();
                 round++;
@@ -99,7 +100,6 @@ const gameFlow = (function() {
                 return;
             } 
         }
-        
 
         console.log("It's a tie.");
     };
@@ -145,17 +145,28 @@ const DOMController = (function () {
             const gameboardSquare = document.createElement("div"); // each cell in the board is a div thats inside the main gameboard div defined in index.html
             gameboardSquare.textContent = gameboardArray[i];
             gameboardSquare.setAttribute("class", "square");
+            gameboardSquare.setAttribute("id", `number${i}`);
             gameboardWhole.appendChild(gameboardSquare);
         }
     }
 
-    return { displayGameboard };
+    const selectSquare = () => { // removing this event listener makes the page load normally. the problem is probably here, but still test
+        const gameboardSquares = document.querySelectorAll(".square");
+        gameboardSquares.forEach((square) => {
+            square.addEventListener("click", () => {
+                return square.getAttribute("id");
+            }, { once: true });
+        });
+    }
+
+    return { displayGameboard, selectSquare };
 })();
 
 const player1 = createPlayer("Lou", "X");
 const player2 = createPlayer("Sam", "O");
 console.log("Position format: n-m \n");
 
+DOMController.displayGameboard();
 gameFlow.setRound(1);
 gameFlow.playGame(player1, player2);
 console.log(gameboard.getGameboard());
