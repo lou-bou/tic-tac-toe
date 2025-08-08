@@ -170,8 +170,11 @@ const gameFlow = (function() {
 })();
 
 const DOMController = (function () {
+    const body = document.querySelector("body");
     const gameboardArray = gameboard.getGameboard();
-    const gameboardWhole = document.querySelector(".gameboard");
+    const gameboardWhole = document.createElement("div");
+    gameboardWhole.setAttribute("class", "gameboard");
+    body.appendChild(gameboardWhole);
     
     const displayGameboard = () => {
         gameboardWhole.textContent = ""; // reset gameboard contents
