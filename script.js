@@ -1,11 +1,3 @@
-/*
-More features:
-- Allow the 2 players to input their names
-- If they click the start button, the interface changes from name input fields to the gameboard
-- If they click the restart button, the gameboard is reset
-- If they finish a game, instead of alerting, the winner is displayed in a text element.
-*/
-
 function createPlayer(name, symbol) {
     const play = (position) => gameboard.addSymbol(position, symbol);
     return { name, symbol, play };
@@ -98,7 +90,6 @@ const gameFlow = (function() {
         const gameboardSquares = document.querySelectorAll(".square");
         gameboardSquares.forEach((square) => {
             square.addEventListener("click", () => {
-                // return square.getAttribute("id");
                 let squareID = square.getAttribute("id");
                 console.log(`Square ${squareID} selected`);
                 if (turn == 0) {
@@ -211,9 +202,9 @@ const DOMController = (function () {
     });
     
     const displayGameboard = () => {
-        gameboardWhole.textContent = ""; // reset gameboard contents
+        gameboardWhole.textContent = ""; 
         for (let i = 0; i <= 8; i++) {
-            const gameboardSquare = document.createElement("div"); // each cell in the board is a div thats inside the main gameboard div defined in index.html
+            const gameboardSquare = document.createElement("div"); 
             gameboardSquare.textContent = gameboardArray[i];
             gameboardSquare.setAttribute("class", "square");
             gameboardSquare.setAttribute("id", `number${i}`);
