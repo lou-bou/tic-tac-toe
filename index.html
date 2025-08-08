@@ -8,15 +8,20 @@
     <script src="script.js" defer></script>
 </head>
 <body>
+    <h1>Tic Tac Toe</h1>
     <button id="play">Play</button>
     <dialog id="game-dialog">
         <button>X</button> <!--Close dialog-->
         <form action="" method="dialog">
-            <label for="player1_name">Player 1's name: </label>
-            <input type="text" id="player1_name" name="player1_name">
+            <div>
+                <label for="player1_name">Player 1's name: </label>
+                <input type="text" id="player1_name" name="player1_name">
+            </div>
             <br>
-            <label for="player2_name">Player 2's name: </label>
-            <input type="text" id="player2_name" name="player2_name">
+            <div>
+                <label for="player2_name">Player 2's name: </label>
+                <input type="text" id="player2_name" name="player2_name">
+            </div>
             <br>
             <button type="submit" id="start-game">Start Game</button>
         </form>

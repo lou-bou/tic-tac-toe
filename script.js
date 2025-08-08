@@ -12,8 +12,8 @@ function createPlayer(name, symbol) {
 }
 
 const gameboard = (function() {
-    let gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const resetGameboardArray = () => gameboard = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let gameboard = ["", "", "", "", "", "", "", "", ""];
+    const resetGameboardArray = () => gameboard = ["", "", "", "", "", "", "", "", ""];
     const setPosition = (player, playerPosition) => player.play(playerPosition);
     const addSymbol = (position, symbol) => {
         let index;
@@ -48,7 +48,7 @@ const gameboard = (function() {
             default:
                 return 0; // 0 indicates failure to play round by a player
         }
-        if (gameboard[index] != 0) { // if a position selected by a player isn't equal to 0, that means it's either equal to 'X' or 'O', so it can not be picked
+        if (gameboard[index] != "") { // if a position selected by a player isn't equal to 0, that means it's either equal to 'X' or 'O', so it can not be picked
             return 0; // 0 indicates failure to play round by a player
         } else {
             gameboard.splice(index, 1, symbol);
@@ -82,11 +82,15 @@ const gameFlow = (function() {
         gameFlow.setRound(1);
 
         if (document.querySelector("#play")) {
-            DOMController.removePlayButton();
+            DOMController.cleanInitialInterface();
         }
         
         if (!document.querySelector("#restart")) {
             DOMController.createRestartButton();
+        }
+
+        if (document.querySelector("h1")) {
+
         }
         
         DOMController.displayGameboard();
@@ -224,7 +228,7 @@ const DOMController = (function () {
     const resetGameboardDOM = () => {
         const gameboardSquares = document.querySelectorAll(".square");
         gameboardSquares.forEach((square) => {
-            square.textContent = "0";
+            square.textContent = "";
         });
     }
 
@@ -242,9 +246,17 @@ const DOMController = (function () {
         })
     }
 
-    const removePlayButton = () => {
-        body.removeChild(playButton);
+    const cleanInitialInterface = () => {
+
+        if (document.querySelector("#play")) {
+            body.removeChild(playButton);
+        }
+
+        if (document.querySelector("h1")) {
+            body.removeChild(document.querySelector("h1"));
+        }
+        
     }
 
-    return { displayGameboard, updateGameboard, resetGameboardDOM, createRestartButton, removePlayButton };
+    return { displayGameboard, updateGameboard, resetGameboardDOM, createRestartButton, cleanInitialInterface };
 })();
