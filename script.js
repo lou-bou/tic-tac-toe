@@ -125,19 +125,19 @@ const gameFlow = (function() {
                     setTimeout(() => {
                         alert(`${player1.name} won!`);
                         resetGameboard();
-                    }, 500);
+                    }, 50); // I set a timeout to make sure the gameboard updates with the last symbol before showing the result. I chose 50ms to not let the player click another square before showing the result (that would show 2 consecutive results).
                 } else if (checkWinner(player2)) {
                     setTimeout(() => {
                         alert(`${player2.name} won!`);
                         resetGameboard();
-                    }, 500);
+                    }, 50);
                 } 
 
                 if (getRound() == 10) {
                     setTimeout(() => {
                         alert("It's a tie");
                         resetGameboard();
-                    }, 2000);
+                    }, 50);
                     
                 }
             });
