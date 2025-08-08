@@ -77,8 +77,20 @@ const gameFlow = (function() {
     };
 
     const playGame = (player1, player2) => {
+        resetGameboard();
+
         gameFlow.setRound(1);
+
+        if (document.querySelector("#play")) {
+            DOMController.removePlayButton();
+        }
+        
+        if (!document.querySelector("#restart")) {
+            DOMController.createRestartButton();
+        }
+        
         DOMController.displayGameboard();
+        
         const gameboardSquares = document.querySelectorAll(".square");
         gameboardSquares.forEach((square) => {
             square.addEventListener("click", () => {
@@ -108,35 +120,32 @@ const gameFlow = (function() {
                 if (checkWinner(player1)) {
                     setTimeout(() => {
                         alert(`${player1.name} won!`);
-                        gameboard.resetGameboardArray();
-                        DOMController.resetGameboard();
-                        setRound(1);
-                        resetTurn();
+                        resetGameboard();
                     }, 500);
                 } else if (checkWinner(player2)) {
                     setTimeout(() => {
                         alert(`${player2.name} won!`);
-                        console.log(gameboard.getGameboard());
-                        gameboard.resetGameboardArray();
-                        DOMController.resetGameboard();
-                        setRound(1);
-                        resetTurn();
+                        resetGameboard();
                     }, 500);
                 } 
 
                 if (getRound() == 10) {
                     setTimeout(() => {
                         alert("It's a tie");
-                        gameboard.resetGameboardArray();
-                        DOMController.resetGameboard();
-                        setRound(1);
-                        resetTurn();
+                        resetGameboard();
                     }, 2000);
                     
                 }
             });
         });
     };
+
+    const resetGameboard = () => {
+        gameboard.resetGameboardArray();
+        DOMController.resetGameboardDOM();
+        setRound(1);
+        resetTurn();
+    }
 
     const checkWinner = (player) => {
         const gbArray = gameboard.getGameboard();
@@ -166,8 +175,9 @@ const gameFlow = (function() {
         return 0;
     };
     
-    return { playGame, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn, resetTurn };
+    return { playGame, checkWinner, changeTurn, getRound, nextRound, setRound, getTurn, resetTurn, resetGameboard };
 })();
+
 
 const DOMController = (function () {
     const body = document.querySelector("body");
@@ -175,6 +185,26 @@ const DOMController = (function () {
     const gameboardWhole = document.createElement("div");
     gameboardWhole.setAttribute("class", "gameboard");
     body.appendChild(gameboardWhole);
+
+    const gameDialog = document.querySelector("#game-dialog");
+    const closeDialog = document.querySelector("#game-dialog button");
+    const gameForm = document.querySelector("#game-dialog form");
+    const startGame = document.querySelector("#start-game");
+    const playButton = document.querySelector("#play");
+    playButton.addEventListener("click", () => {
+        gameDialog.showModal();
+    });
+
+    closeDialog.addEventListener("click", () => {
+        gameDialog.close();
+    })
+
+    startGame.addEventListener("click", () => {
+        const player1 = createPlayer(gameForm.player1_name.value, "X");
+        const player2 = createPlayer(gameForm.player2_name.value, "O");
+
+        gameFlow.playGame(player1, player2);
+    });
     
     const displayGameboard = () => {
         gameboardWhole.textContent = ""; // reset gameboard contents
@@ -191,17 +221,30 @@ const DOMController = (function () {
         square.textContent = symbol;
     }
 
-    const resetGameboard = () => {
+    const resetGameboardDOM = () => {
         const gameboardSquares = document.querySelectorAll(".square");
         gameboardSquares.forEach((square) => {
             square.textContent = "0";
         });
     }
 
-    return { displayGameboard, updateGameboard, resetGameboard };
+    const createRestartButton = () => {
+        const restartButton = document.createElement("button");
+        restartButton.setAttribute("id", "restart");
+        restartButton.textContent = "Restart Game";
+        body.prepend(restartButton);
+
+        restartButton.addEventListener("click", () => {
+            const player1 = createPlayer(gameForm.player1_name.value, "X");
+            const player2 = createPlayer(gameForm.player2_name.value, "O");
+
+            gameFlow.playGame(player1, player2);
+        })
+    }
+
+    const removePlayButton = () => {
+        body.removeChild(playButton);
+    }
+
+    return { displayGameboard, updateGameboard, resetGameboardDOM, createRestartButton, removePlayButton };
 })();
-
-const player1 = createPlayer("Lou", "X");
-const player2 = createPlayer("Sam", "O");
-
-gameFlow.playGame(player1, player2);

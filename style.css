@@ -1,10 +1,15 @@
-* {
-    border: black 2px solid;
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .gameboard {
     display: grid;
-    grid-template: repeat(3, 100px) / repeat(3, 100px);
+    width: 300px;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
     justify-content: center;
     align-items: center;
 }
@@ -15,6 +20,7 @@
     align-items: center;
     width: 100px;
     height: 100px;
+    border: 1px black solid;
     font-size: 30px;
 }
 
